@@ -4,6 +4,7 @@ import com.example.webservice.chat.models.dtos.ChatRoomDto
 import com.example.webservice.chat.models.mappers.ChatRoomMapper
 import com.example.webservice.chat.services.ChatRoomService
 import com.example.webservice.commons.utils.ExceptionUtil
+import com.example.webservice.config.security.SecurityContext
 import com.example.webservice.domains.common.controller.CrudController
 import com.example.webservice.routing.Route
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +23,7 @@ class ChatRoomController @Autowired constructor(
     @GetMapping(Route.V1.SEARCH_CHATROOMS)
     override fun search(@RequestParam("q", defaultValue = "") query: String,
                         @RequestParam("page", defaultValue = "0") page: Int): ResponseEntity<Page<ChatRoomDto>> {
-        val chatRooms = this.chatRoomService.search(query, page)
+        val chatRooms = this.chatRoomService.search(query, SecurityContext.getLoggedInUsername(), page, 1000)
         return ResponseEntity.ok(chatRooms.map { this.chatRoomMapper.map(it) })
     }
 
